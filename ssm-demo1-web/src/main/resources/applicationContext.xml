@@ -10,19 +10,39 @@
     </context:component-scan>
 
     <!--2.配置数据源-->
-    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
-    <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
-        <property name="driverClassName" value="${druid.jdbc.driverClassName}"></property>
-        <property name="url" value="${druid.jdbc.url}"></property>
-        <property name="username" value="${druid.jdbc.username}"></property>
-        <property name="password" value="${druid.jdbc.password}"></property>
-        <property name="initialSize" value="${druid.jdbc.initialSize}"></property>
-        <property name="maxActive" value="${druid.jdbc.maxActive}"></property>
-        <property name="maxWait" value="${druid.jdbc.maxWait}"></property>
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${druid.jdbc.driverClassName}"/>
+        <property name="url" value="${druid.jdbc.url}"/>
+        <property name="username" value="${druid.jdbc.username}"/>
+        <property name="password" value="${druid.jdbc.password}"/>
+        <property name="initialSize" value="${druid.jdbc.initialSize}"/>
+        <property name="maxActive" value="${druid.jdbc.maxActive}"/>
+        <property name="maxWait" value="${druid.jdbc.maxWait}"/>
+        <!--Druid内置提供一个StatFilter，用于统计监控信息。-->
+        <!--统计监控信息：第一种方式:别名配置,StatFilter的别名是stat，这个别名映射配置信息保存在druid-xxx.jar!/META-INF/druid-filter.properties。-->
+        <!--  <property name="filters" value="stat"/>-->
+        <!--统计监控信息：第二种配置方式:组合配置,StatFilter可以和其他的Filter配置使用-->
+        <!--  <property name="filters" value="stat,log4j"/>-->
+        <!--统计监控信息：第三种方式：通过proxyFilters属性配置-->
+        <property name="proxyFilters">
+            <list>
+                <ref bean="statFilter"/>
+            </list>
+        </property>
     </bean>
+    <!--监控统计信息：3. 通过proxyFilters属性配置-->
+    <bean class="com.alibaba.druid.filter.stat.StatFilter" id="statFilter">
+        <!--SQL合并配置-->
+        <property name="mergeSql" value="true"/>
+        <!--慢sql记录：StatFilter属性slowSqlMillis用来配置SQL慢的标准，
+        执行时间超过slowSqlMillis的就是慢。slowSqlMillis的缺省值为3000，也就是3秒。-->
+        <property name="slowSqlMillis" value="5000"/>
+    </bean>
+
     <!--3. 配置SqlSessionFactoryBean-->
     <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sessionFactoryBean">
-        <property name="dataSource" ref="dataSource"></property>
+        <property name="dataSource" ref="dataSource"/>
         <!--todo 5 查看mybatis的执行sql-->
         <!--    <property name="configuration">
                 <bean class="org.apache.ibatis.session.Configuration">

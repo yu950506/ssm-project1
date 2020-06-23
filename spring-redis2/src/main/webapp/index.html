@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.2.1.js"></script>
+</head>
+<body>
+<h1>我是主页</h1>
+<select id="s1" name="下拉框">
+    <option>请选择姓名</option>
+</select>
+</body>
+<script>
+    $(function () {
+        var res = $("#s1");
+        $.ajax({
+            type: "POST",
+            url: "user/findAll",
+            dataType: "json",
+            success: function (data) {
+                data.forEach(function (value) {
+                    var name = value.username;
+                    var id = value.id;
+                    var option = "<option id='" + id + "'>" + name + "</option>";
+                    res.append(option);
+                });
+            }
+        });
+    })
+</script>
+</html>

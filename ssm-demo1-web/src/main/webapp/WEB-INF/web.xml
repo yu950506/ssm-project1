@@ -33,6 +33,21 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
+
+    <!--2.3 Druid Web监控配置-->
+<!--    <filter>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+        <init-param>
+            <param-name>exclusions</param-name>
+            <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>-->
+
     <filter-mapping>
         <filter-name>characterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern><!-- todo /* 和 / 的区别-->
@@ -62,17 +77,47 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>dispatcherServlet</servlet-name>
-        <url-pattern>*.do</url-pattern><!--todo /* 的时候index.jsp访问不到-->
-    </servlet-mapping>
+
     <!--
     /* ：可以把我们的jsp页面等静态资源也可以包含在内了
     / ： 而这个只能去过滤Controller(Servlet)请求
     所有往往我们在web.xml中配置DispatchServlet时，用 / ，
     而配置编码过滤器等要涉及到jsp或者静态页面的时候就用 /* ，一般是使用过滤器时候用 /* 就对了
     -->
-    
+    <!--
+     Druid内置提供了一个StatViewServlet用于展示Druid的统计信息。
+        这个StatViewServlet的用途包括：
+        提供监控信息展示的html页面
+        提供监控信息的JSON API
+    -->
+    <servlet>
+        <servlet-name>DruidStatView</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+        <init-param>
+            <param-name>resetEnable</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>loginUsername</param-name>
+            <param-value>druid</param-value>
+        </init-param>
+        <init-param>
+            <param-name>loginPassword</param-name>
+            <param-value>druid</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <url-pattern>*.do</url-pattern><!--todo /* 的时候index.jsp访问不到-->
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DruidStatView</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
+
+
     <error-page>
         <error-code>403</error-code>
         <location>/pages/403.jsp</location>
