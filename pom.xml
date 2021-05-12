@@ -19,7 +19,7 @@
         <!--spring相关的版本的版本-->
         <spring-context.version>5.0.6.RELEASE</spring-context.version>
         <!--spring-security版本-->
-        <spring-security.version>5.0.5.RELEASE</spring-security.version>
+        <spring-security.version>5.2.10.RELEASE</spring-security.version>
         <!--spring整合mybatis的版本-->
         <mybatis-spring.version>1.3.2</mybatis-spring.version>
         <!--spring整合junit的版本-->
