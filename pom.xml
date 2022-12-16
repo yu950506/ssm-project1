@@ -17,7 +17,7 @@
     <!--将SSM整合的进行拆分。这是一个父工程-->
     <properties>
         <!--spring相关的版本的版本-->
-        <spring-context.version>5.0.6.RELEASE</spring-context.version>
+        <spring-context.version>5.2.20.RELEASE</spring-context.version>
         <!--spring-security版本-->
         <spring-security.version>5.0.5.RELEASE</spring-security.version>
         <!--spring整合mybatis的版本-->
